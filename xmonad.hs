@@ -200,9 +200,9 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts float
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
                myDefaultLayout =     withBorder myBorderWidth threeCol
-                                 ||| spirals
-                                 ||| grid
-                                 ||| floats
+                                 ||| withBorder myBorderWidth spirals
+                                 ||| withBorder myBorderWidth grid
+                                 ||| withBorder myBorderWidth floats
                                  ||| noBorders tabs
 
 -- myWorkspaces = [" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "]
