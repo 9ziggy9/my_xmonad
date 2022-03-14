@@ -36,7 +36,6 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WorkspaceHistory
 
     -- Layouts
-import XMonad.Layout.Accordion
 import XMonad.Layout.GridVariants (Grid(Grid))
 import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Spiral
@@ -278,11 +277,6 @@ myManageHook = composeAll
      , className =? "toolbar"         --> doFloat
      , className =? "Yad"             --> doCenterFloat
      , title =? "Oracle VM VirtualBox Manager"  --> doFloat
-     , title =? "Mozilla Firefox"     --> doShift ( myWorkspaces !! 1 )
-     , className =? "Brave-browser"   --> doShift ( myWorkspaces !! 1 )
-     , className =? "mpv"             --> doShift ( myWorkspaces !! 7 )
-     , className =? "Gimp"            --> doShift ( myWorkspaces !! 8 )
-     , className =? "VirtualBox Manager" --> doShift  ( myWorkspaces !! 4 )
      , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
      , isFullscreen -->  doFullFloat
      ] <+> namedScratchpadManageHook myScratchPads
@@ -295,32 +289,8 @@ myKeys =
         , ("M-S-r", spawn "xmonad --restart")         -- Restarts xmonad
         , ("M-S-q", io exitSuccess)                   -- Quits xmonad
 
-    -- KB_GROUP Get Help
-        , ("M-S-/", spawn "~/.xmonad/xmonad_keys.sh") -- Get list of keybindings
-        , ("M-/", spawn "dtos-help")                  -- DTOS help/tutorial videos
-
-    -- KB_GROUP Run Prompt
-        , ("M-S-<Return>", spawn "dm-run") -- Dmenu
-
-    -- KB_GROUP Other Dmenu Prompts
-    -- In Xmonad and many tiling window managers, M-p is the default keybinding to
-    -- launch dmenu_run, so I've decided to use M-p plus KEY for these dmenu scripts.
-        , ("M-p h", spawn "dm-hub")           -- allows access to all dmscripts
-        , ("M-p a", spawn "dm-sounds")        -- choose an ambient background
-        , ("M-p b", spawn "dm-setbg")         -- set a background
-        , ("M-p c", spawn "dtos-colorscheme") -- choose a colorscheme
-        , ("M-p C", spawn "dm-colpick")       -- pick color from our scheme
-        , ("M-p e", spawn "dm-confedit")      -- edit config files
-        , ("M-p i", spawn "dm-maim")          -- screenshots (images)
-        , ("M-p k", spawn "dm-kill")          -- kill processes
-        , ("M-p m", spawn "dm-man")           -- manpages
-        , ("M-p n", spawn "dm-note")          -- store one-line notes and copy them
-        , ("M-p o", spawn "dm-bookman")       -- qutebrowser bookmarks/history
-        , ("M-p p", spawn "passmenu -p \"Pass: \"") -- passmenu
-        , ("M-p q", spawn "dm-logout")        -- logout menu
-        , ("M-p r", spawn "dm-radio")         -- online radio
-        , ("M-p s", spawn "dm-websearch")     -- search various search engines
-        , ("M-p t", spawn "dm-translate")     -- translate text (Google Translate)
+    -- KB_GROUP Run Prompts
+        , ("M-p", spawn "dm-run") -- Dmenu
 
     -- KB_GROUP Useful programs to have a keybinding for launch
         , ("M-<Return>", spawn (myTerminal))
@@ -328,8 +298,8 @@ myKeys =
         , ("M-M1-h", spawn (myTerminal ++ " -e htop"))
 
     -- KB_GROUP Kill windows
-        , ("M-S-c", kill1)     -- Kill the currently focused client
-        , ("M-S-a", killAll)   -- Kill all windows on current workspace
+        , ("M-x", kill1)     -- Kill the currently focused client
+        , ("M-S-x", killAll)   -- Kill all windows on current workspace
 
     -- KB_GROUP Workspaces
         , ("M-.", nextScreen)  -- Switch focus to next monitor
