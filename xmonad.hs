@@ -124,19 +124,9 @@ myStartupHook = do
     spawnOnce "feh --bg-fill ~/wallpapers/solarized.png"
     setWMName "LG3D"
 
-myAppGrid = [ ("Audacity", "audacity")
-                 , ("Deadbeef", "deadbeef")
-                 , ("Emacs", "emacsclient -c -a emacs")
-                 , ("Firefox", "firefox")
-                 , ("Geany", "geany")
-                 , ("Geary", "geary")
-                 , ("Gimp", "gimp")
-                 , ("Kdenlive", "kdenlive")
-                 , ("LibreOffice Impress", "loimpress")
-                 , ("LibreOffice Writer", "lowriter")
-                 , ("OBS", "obs")
-                 , ("PCManFM", "pcmanfm")
-                 ]
+myNavigation2DConfig = def { layoutNavigation = [("spirals", sideNavigation)
+					       , ("threeCol", sideNavigation)
+					       , ("grid", sideNavigation)]}
 
 myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
@@ -175,19 +165,19 @@ mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 floats   = renamed [Replace "floats"]
            $ limitWindows 20 simplestFloat
 grid     = renamed [Replace "grid"]
-	   $ smartBorders
+--	   $ smartBorders
            $ windowNavigation
            $ addTabs shrinkText myTabTheme
-           $ subLayout [] (smartBorders Simplest)
+           -- $ subLayout [] (smartBorders Simplest)
            $ limitWindows 12
            $ mySpacing 4
            $ mkToggle (single MIRROR)
            $ Grid (16/10)
 spirals  = renamed [Replace "spirals"]
-	   $ smartBorders
+	   -- $ smartBorders
            $ windowNavigation
            $ addTabs shrinkText myTabTheme
-           $ subLayout [] (smartBorders Simplest)
+           -- $ subLayout [] (smartBorders Simplest)
            $ mySpacing' 4
            $ spiral (6/7)
 threeCol = renamed [Replace "threeCol"]
@@ -379,7 +369,7 @@ main = do
     xmproc1 <- spawnPipe ("xmobar -x 1 $HOME/.config/xmobar/" ++ colorScheme ++ "-xmobarrc")
     xmproc2 <- spawnPipe ("xmobar -x 2 $HOME/.config/xmobar/" ++ colorScheme ++ "-xmobarrc")
     -- the xmonad, ya know...what the WM is named after!
-    xmonad $ withNavigation2DConfig def $ ewmh def
+    xmonad $ withNavigation2DConfig myNavigation2DConfig $ ewmh def
         { manageHook         = myManageHook <+> manageDocks
         , handleEventHook    = docksEventHook
                                -- Uncomment this line to enable fullscreen support on things like YouTube/Netflix.
