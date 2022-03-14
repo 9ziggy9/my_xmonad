@@ -101,26 +101,18 @@ myBorderWidth :: Dimension
 myBorderWidth = 1           -- Sets border width for windows
 
 myNormColor :: String       -- Border color of normal windows
-myNormColor   = colorBack   -- This variable is imported from Colors.THEME
+myNormColor   = color11   -- This variable is imported from Colors.THEME
 
 myFocusColor :: String      -- Border color of focused windows
-myFocusColor  = color15     -- This variable is imported from Colors.THEME
+myFocusColor  = color16     -- This variable is imported from Colors.THEME
 
 windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 myStartupHook :: X ()
 myStartupHook = do
-    spawn "killall conky"   -- kill current conky on each restart
-
-    spawnOnce "lxsession"
     spawnOnce "picom"
-    spawnOnce "nm-applet"
-    spawnOnce "volumeicon"
     spawnOnce "/usr/bin/emacs --daemon" -- emacs daemon for the emacsclient
-
-    spawn ("sleep 2 && conky -c $HOME/.config/conky/xmonad/" ++ colorScheme ++ "-01.conkyrc")
-
     spawnOnce "feh --bg-fill ~/wallpapers/solarized.png"
     setWMName "LG3D"
 
@@ -165,19 +157,19 @@ mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 floats   = renamed [Replace "floats"]
            $ limitWindows 20 simplestFloat
 grid     = renamed [Replace "grid"]
---	   $ smartBorders
+	   $ smartBorders
            $ windowNavigation
            $ addTabs shrinkText myTabTheme
-           -- $ subLayout [] (smartBorders Simplest)
+           $ subLayout [] (smartBorders Simplest)
            $ limitWindows 12
            $ mySpacing 4
            $ mkToggle (single MIRROR)
            $ Grid (16/10)
 spirals  = renamed [Replace "spirals"]
-	   -- $ smartBorders
+	   $ smartBorders
            $ windowNavigation
            $ addTabs shrinkText myTabTheme
-           -- $ subLayout [] (smartBorders Simplest)
+           $ subLayout [] (smartBorders Simplest)
            $ mySpacing' 4
            $ spiral (6/7)
 threeCol = renamed [Replace "threeCol"]
@@ -294,17 +286,11 @@ myKeys =
         , ("M-<Space>", sendMessage NextLayout)           -- Switch to next layout
         , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- Toggles noborder/full
 
-    -- KB_GROUP Increase/decrease windows in the master pane or the stack
-        , ("M-S-<Up>", sendMessage (IncMasterN 1))      -- Increase # of clients master pane
-        , ("M-S-<Down>", sendMessage (IncMasterN (-1))) -- Decrease # of clients master pane
-        , ("M-C-<Up>", increaseLimit)                   -- Increase # of windows
-        , ("M-C-<Down>", decreaseLimit)                 -- Decrease # of windows
-
     -- KB_GROUP Window resizing
-        -- , ("M-h", sendMessage Shrink)                   -- Shrink horiz window width
-        -- , ("M-l", sendMessage Expand)                   -- Expand horiz window width
-        -- , ("M-M1-j", sendMessage MirrorShrink)          -- Shrink vert window width
-        -- , ("M-M1-k", sendMessage MirrorExpand)          -- Expand vert window width
+        , ("M-[", sendMessage Shrink)                   -- Shrink horiz window width
+        , ("M-]", sendMessage Expand)                   -- Expand horiz window width
+        , ("M-S-[", sendMessage MirrorShrink)          -- Shrink vert window width
+        , ("M-S-]", sendMessage MirrorExpand)          -- Expand vert window width
 
     -- KB_GROUP Sublayouts
     -- This is used to push windows to tabbed sublayouts, or pull them out of it.
@@ -313,7 +299,7 @@ myKeys =
         , ("M-C-k", sendMessage $ pullGroup U)
         , ("M-C-j", sendMessage $ pullGroup D)
         -- , ("M-C-m", withFocused (sendMessage . MergeAll))
-        -- , ("M-C-u", withFocused (sendMessage . UnMerge))
+        , ("M-C-<Tab>", withFocused (sendMessage . UnMerge))
         -- , ("M-C-/", withFocused (sendMessage . UnMergeAll))
         , ("M-<Tab>", onGroup W.focusUp')    -- Switch focus to next tab
         -- , ("M-C-,", onGroup W.focusDown')  -- Switch focus to prev tab
@@ -325,37 +311,17 @@ myKeys =
         , ("M-d", namedScratchpadAction myScratchPads "terminal")
         , ("M-c", namedScratchpadAction myScratchPads "browser")
 
-    -- KB_GROUP Controls for mocp music player (SUPER-u followed by a key)
-        , ("M-u p", spawn "mocp --play")
-        , ("M-u l", spawn "mocp --next")
-        , ("M-u h", spawn "mocp --previous")
-        , ("M-u <Space>", spawn "mocp --toggle-pause")
-
     -- KB_GROUP Emacs (SUPER-e followed by a key)
-        , ("M-e e", spawn (myEmacs ++ ("--eval '(dashboard-refresh-buffer)'")))   -- emacs dashboard
-        , ("M-e b", spawn (myEmacs ++ ("--eval '(ibuffer)'")))   -- list buffers
-        , ("M-e d", spawn (myEmacs ++ ("--eval '(dired nil)'"))) -- dired
-        , ("M-e i", spawn (myEmacs ++ ("--eval '(erc)'")))       -- erc irc client
-        , ("M-e n", spawn (myEmacs ++ ("--eval '(elfeed)'")))    -- elfeed rss
-        , ("M-e s", spawn (myEmacs ++ ("--eval '(eshell)'")))    -- eshell
-        , ("M-e t", spawn (myEmacs ++ ("--eval '(mastodon)'")))  -- mastodon.el
-        , ("M-e v", spawn (myEmacs ++ ("--eval '(+vterm/here nil)'"))) -- vterm if on Doom Emacs
-        , ("M-e w", spawn (myEmacs ++ ("--eval '(doom/window-maximize-buffer(eww \"distro.tube\"))'"))) -- eww browser if on Doom Emacs
-        , ("M-e a", spawn (myEmacs ++ ("--eval '(emms)' --eval '(emms-play-directory-tree \"~/Music/\")'")))
-
-    -- KB_GROUP Multimedia Keys
-        , ("<XF86AudioPlay>", spawn "mocp --play")
-        , ("<XF86AudioPrev>", spawn "mocp --previous")
-        , ("<XF86AudioNext>", spawn "mocp --next")
-        , ("<XF86AudioMute>", spawn "amixer set Master toggle")
-        , ("<XF86AudioLowerVolume>", spawn "amixer set Master 5%- unmute")
-        , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 5%+ unmute")
-        , ("<XF86HomePage>", spawn "qutebrowser https://www.youtube.com/c/DistroTube")
-        , ("<XF86Search>", spawn "dm-websearch")
-        , ("<XF86Mail>", runOrRaise "thunderbird" (resource =? "thunderbird"))
-        , ("<XF86Calculator>", runOrRaise "qalculate-gtk" (resource =? "qalculate-gtk"))
-        , ("<XF86Eject>", spawn "toggleeject")
-        , ("<Print>", spawn "dm-maim")
+        , ("M-e", spawn myEmacs )   -- emacs dashboard
+        --, ("M-e b", spawn (myEmacs ++ ("--eval '(ibuffer)'")))   -- list buffers
+        --, ("M-e d", spawn (myEmacs ++ ("--eval '(dired nil)'"))) -- dired
+        --, ("M-e i", spawn (myEmacs ++ ("--eval '(erc)'")))       -- erc irc client
+        --, ("M-e n", spawn (myEmacs ++ ("--eval '(elfeed)'")))    -- elfeed rss
+        --, ("M-e s", spawn (myEmacs ++ ("--eval '(eshell)'")))    -- eshell
+        --, ("M-e t", spawn (myEmacs ++ ("--eval '(mastodon)'")))  -- mastodon.el
+        --, ("M-e v", spawn (myEmacs ++ ("--eval '(+vterm/here nil)'"))) -- vterm if on Doom Emacs
+        --, ("M-e w", spawn (myEmacs ++ ("--eval '(doom/window-maximize-buffer(eww \"distro.tube\"))'"))) -- eww browser if on Doom Emacs
+        --, ("M-e a", spawn (myEmacs ++ ("--eval '(emms)' --eval '(emms-play-directory-tree \"~/Music/\")'")))
         ]
     -- The following lines are needed for named scratchpads.
           where nonNSP          = WSIs (return (\ws -> W.tag ws /= "NSP"))
