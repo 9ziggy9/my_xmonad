@@ -10,7 +10,6 @@ import qualified XMonad.StackSet as W
     -- Actions
 import XMonad.Actions.CopyWindow (kill1)
 import XMonad.Actions.CycleWS (Direction1D(..), moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
-import XMonad.Actions.GridSelect
 import XMonad.Actions.MouseResize
 import XMonad.Actions.Promote
 import XMonad.Actions.RotSlaves (rotSlavesDown, rotAllDown)
@@ -125,17 +124,6 @@ myStartupHook = do
     spawnOnce "feh --bg-fill ~/wallpapers/solarized.png"
     setWMName "LG3D"
 
-spawnSelected' :: [(String, String)] -> X ()
-spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
-    where conf = def
-                   { gs_cellheight   = 40
-                   , gs_cellwidth    = 200
-                   , gs_cellpadding  = 6
-                   , gs_originFractX = 0.5
-                   , gs_originFractY = 0.5
-                   , gs_font         = myFont
-                   }
-
 myAppGrid = [ ("Audacity", "audacity")
                  , ("Deadbeef", "deadbeef")
                  , ("Emacs", "emacsclient -c -a emacs")
@@ -160,10 +148,10 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
     findTerm   = title =? "scratchpad"
     manageTerm = customFloating $ W.RationalRect l t w h
                where
-                 h = 0.9
-                 w = 0.9
-                 t = 0.95 -h
-                 l = 0.95 -w
+                 h = 0.6
+                 w = 0.6
+                 t = 0.2
+                 l = 0.2
     spawnMocp  = myTerminal ++ " -t mocp -e mocp"
     findMocp   = title =? "mocp"
     manageMocp = customFloating $ W.RationalRect l t w h
@@ -362,7 +350,7 @@ myKeys =
     -- Toggle show/hide these programs.  They run on a hidden workspace.
     -- When you toggle them to show, it brings them to your current workspace.
     -- Toggle them to hide and it sends them back to hidden workspace (NSP).
-        , ("M-s t", namedScratchpadAction myScratchPads "terminal")
+        , ("M-d", namedScratchpadAction myScratchPads "terminal")
         , ("M-s m", namedScratchpadAction myScratchPads "mocp")
         , ("M-s c", namedScratchpadAction myScratchPads "calculator")
 
