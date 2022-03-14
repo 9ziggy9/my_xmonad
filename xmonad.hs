@@ -313,20 +313,26 @@ myKeys =
 
     -- KB_GROUP Windows navigation
         , ("M-m", windows W.focusMaster)  -- Move focus to the master window
-        , ("M-j", windowGo D False)    -- Move focus to the next window
-        , ("M-k", windowGo U False)      -- Move focus to the prev window
+
+	-- FOCUS MOVEMENT
+        , ("M-j", windowGo D False)
+        , ("M-k", windowGo U False)
         , ("M-h", windowGo L False)    
         , ("M-l", windowGo R False)   
+	-- TILE MOVEMENT
+        , ("M-S-j", windowSwap D False)
+        , ("M-S-k", windowSwap U False)
+        , ("M-S-h", windowSwap L False)    
+        , ("M-S-l", windowSwap R False)   
+
         , ("M-S-m", windows W.swapMaster) -- Swap the focused window and the master window
-        , ("M-S-j", windows W.swapDown)   -- Swap focused window with next window
-        , ("M-S-k", windows W.swapUp)     -- Swap focused window with prev window
-        , ("M-<Backspace>", promote)      -- Moves focused window to master, others maintain order
-        , ("M-S-<Tab>", rotSlavesDown)    -- Rotate all windows except master and keep focus in place
-        , ("M-C-<Tab>", rotAllDown)       -- Rotate all the windows in the current stack
+        --, ("M-<Backspace>", promote)      -- Moves focused window to master, others maintain order
+        --, ("M-S-<Tab>", rotSlavesDown)    -- Rotate all windows except master and keep focus in place
+        --, ("M-C-<Tab>", rotAllDown)       -- Rotate all the windows in the current stack
 
     -- KB_GROUP Layouts
-        , ("M-<Tab>", sendMessage NextLayout)           -- Switch to next layout
-        , ("M-<Space>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- Toggles noborder/full
+        , ("M-<Space>", sendMessage NextLayout)           -- Switch to next layout
+        , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- Toggles noborder/full
 
     -- KB_GROUP Increase/decrease windows in the master pane or the stack
         , ("M-S-<Up>", sendMessage (IncMasterN 1))      -- Increase # of clients master pane
@@ -337,8 +343,8 @@ myKeys =
     -- KB_GROUP Window resizing
         -- , ("M-h", sendMessage Shrink)                   -- Shrink horiz window width
         -- , ("M-l", sendMessage Expand)                   -- Expand horiz window width
-        , ("M-M1-j", sendMessage MirrorShrink)          -- Shrink vert window width
-        , ("M-M1-k", sendMessage MirrorExpand)          -- Expand vert window width
+        -- , ("M-M1-j", sendMessage MirrorShrink)          -- Shrink vert window width
+        -- , ("M-M1-k", sendMessage MirrorExpand)          -- Expand vert window width
 
     -- KB_GROUP Sublayouts
     -- This is used to push windows to tabbed sublayouts, or pull them out of it.
@@ -346,11 +352,11 @@ myKeys =
         , ("M-C-l", sendMessage $ pullGroup R)
         , ("M-C-k", sendMessage $ pullGroup U)
         , ("M-C-j", sendMessage $ pullGroup D)
-        , ("M-C-m", withFocused (sendMessage . MergeAll))
+        -- , ("M-C-m", withFocused (sendMessage . MergeAll))
         -- , ("M-C-u", withFocused (sendMessage . UnMerge))
-        , ("M-C-/", withFocused (sendMessage . UnMergeAll))
-        , ("M-C-.", onGroup W.focusUp')    -- Switch focus to next tab
-        , ("M-C-,", onGroup W.focusDown')  -- Switch focus to prev tab
+        -- , ("M-C-/", withFocused (sendMessage . UnMergeAll))
+        , ("M-<Tab>", onGroup W.focusUp')    -- Switch focus to next tab
+        -- , ("M-C-,", onGroup W.focusDown')  -- Switch focus to prev tab
 
     -- KB_GROUP Scratchpads
     -- Toggle show/hide these programs.  They run on a hidden workspace.
